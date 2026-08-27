@@ -7,9 +7,10 @@ const Surveyor = require('../models/Surveyor');
  * Helper to generate signed JWT
  */
 const generateToken = (userId, role) => {
+  const secret = process.env.JWT_SECRET || 'agriconnect_secure_jwt_secret_key_2026_fallback';
   return jwt.sign(
     { userId, role },
-    process.env.JWT_SECRET,
+    secret,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 };
