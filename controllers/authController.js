@@ -151,6 +151,14 @@ const login = async (req, res) => {
       });
     }
 
+    // Ensure MongoDB connection is healthy
+    if (require('mongoose').connection.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: 'Database is currently unavailable or connecting. Please try again shortly.'
+      });
+    }
+
     // Find user by email or mobile
     let user = await User.findOne({
       $or: [
@@ -232,10 +240,10 @@ const login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error.message);
+    console.error('Login error:', error.name, error.message);
     return res.status(500).json({
       success: false,
-      message: 'Server error during login'
+      message: 'Server error during login. Please try again later.'
     });
   }
 };
